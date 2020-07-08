@@ -13,7 +13,8 @@ def process(batch):
         splitted = entry['d'].split('|')
         latitude = float(splitted[1])
         longitude = float(splitted[2])
-        return {'name': name, 'message': message, 'latitude': latitude, 'longitude': longitude}
+        colour = splitted[3]
+        return {'name': name, 'message': message, 'latitude': latitude, 'longitude': longitude, 'colour': colour}
 
     batch = batch.strip()
     raw_data = batch.split(": ", 1)[1] # Remove `"stringValue": `
@@ -33,7 +34,8 @@ def geo_jsonize(data):
             },
             "properties": {
                 "name": entry['name'],
-                "message": entry['message']
+                "message": entry['message'],
+                "colour": entry['colour']
             }
         }
 

@@ -9,8 +9,13 @@
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta content="utf-8" http-equiv="encoding">
   </head>
-  <body style="height:100%; margin:0px">
-    <div id="map" style="height:100%">
+  <body style="height:100%; width:100%; margin:0px">
+    <div id="map" style="height:100%"></div>
+    <div id="bottomOverlay" style="position:fixed; bottom:32px; width:100%; height:30vh">
+      <div id="bottomTextBox" style="margin:auto; width:50%; height:100%">
+        <!-- TODO: figure out why this doesn't show up -->
+        <p id="bottomText" style="width:100%; height:100%; color:white; text-align:center">Lorem ipsum dolor sit amet</p>
+      </div>
     </div>
     <script src="map.js"></script>
   </body>
