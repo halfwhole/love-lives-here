@@ -19,15 +19,18 @@ function update(entries) {
     function updateEntry(entry) {
         const coords = entry['geometry']['coordinates'];
         const latlng = new L.LatLng(coords[1], coords[0]);
+
         const props = entry['properties'];
         const colour = props['colour'];
         const message = props['message'];
         const name = props['name'];
-        // TODO: make the radius/weight larger with increasing zoom levels
+
+        const zoomLevel = map.getZoom();
+
         L.circleMarker(latlng, {
-            radius: 2,
+            radius: 2 + (zoomLevel - 12) * 0.5,
             color: colour,
-            weight: 7,
+            weight: 7 + (zoomLevel - 12),
             opacity: 0.2,
             fillColor: colour,
             fillOpacity: 1
