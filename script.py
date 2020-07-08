@@ -3,6 +3,7 @@ import pandas as pd
 
 INPUT_FILE = 'raw_data.txt'
 OUTPUT_CSV_FILE = 'data.csv'
+OUTPUT_CSV_FILE_MESSAGES = 'data_messages.csv'
 OUTPUT_JSON_FILE = 'data.json'
 
 def process(batch):
@@ -10,8 +11,9 @@ def process(batch):
         name = entry['n'].strip()
         message = entry['m'].strip()
         splitted = entry['d'].split('|')
-        coordinates = [float(splitted[2]), float(splitted[1])]
-        return {'name': name, 'message': message, 'coordinates': coordinates}
+        latitude = float(splitted[1])
+        longitude = float(splitted[2])
+        return {'name': name, 'message': message, 'latitude': latitude, 'longitude': longitude}
 
     batch = batch.strip()
     raw_data = batch.split(": ", 1)[1] # Remove `"stringValue": `
@@ -27,7 +29,7 @@ def geo_jsonize(data):
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": entry['coordinates']
+                "coordinates": [entry['longitude'], entry['latitude']]
             },
             "properties": {
                 "name": entry['name'],
@@ -53,6 +55,9 @@ if __name__ == '__main__':
     ## Export to CSV
     df = pd.DataFrame(data)
     df.to_csv(OUTPUT_CSV_FILE, index=False)
+
+    df_messages = df.loc[:, ['message']]
+    df_messages.to_csv(OUTPUT_CSV_FILE_MESSAGES, index=False)
 
     ## Export to GeoJSON
     geojson = geo_jsonize(data)
