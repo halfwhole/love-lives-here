@@ -28,9 +28,9 @@ function update(entries) {
         const zoomLevel = map.getZoom();
 
         L.circleMarker(latlng, {
-            radius: 2 + (zoomLevel - 12) * 0.5,
+            radius: 2 + (zoomLevel - 12),
             color: colour,
-            weight: 7 + (zoomLevel - 12),
+            weight: 7 + (zoomLevel - 12) * 2,
             opacity: 0.2,
             fillColor: colour,
             fillOpacity: 1
@@ -38,11 +38,9 @@ function update(entries) {
     }
 
     function clickHandler(message, name, coords) {
-        // TODO
-        console.log(message);
-        console.log(name);
-        console.log(coords);
-        d3.select('#bottomText').text('hi');
+        // TODO: centre on coordinates, make mascot appear
+        d3.select('#textBoxHeader').text(name);
+        d3.select('#textBoxContent').text(message);
     }
 
     layerGroup.clearLayers();
