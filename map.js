@@ -49,7 +49,7 @@ function update(entries) {
 
 
 fetch('data.json').then(res => res.json()).then(data => {
-    const entries = data['features'].slice(0, 10000);
+    const entries = data['features'];
     map.on('zoom', () => update(entries));
     update(entries);
 
