@@ -15,18 +15,21 @@ const svg = d3.select('#map').select('svg');
 const g = svg.select('g');
 const layerGroup = L.layerGroup().addTo(map);
 
+function selectEntry(entry) {
+    const props = entry['properties'];
+    const message = props['message'];
+    const name = props['name'];
+    //  TODO: make mascot appear, centre if not in view
+    d3.select('#textBoxHeader').text(name);
+    d3.select('#textBoxContent').text(message);
+}
+
 function update(entries) {
     function updateEntry(entry) {
         const coords = entry['geometry']['coordinates'];
         const latlng = new L.LatLng(coords[1], coords[0]);
-
-        const props = entry['properties'];
-        const colour = props['colour'];
-        const message = props['message'];
-        const name = props['name'];
-
+        const colour = entry['properties']['colour'];
         const zoomLevel = map.getZoom();
-
         L.circleMarker(latlng, {
             radius: 2 + (zoomLevel - 12),
             color: colour,
@@ -34,42 +37,22 @@ function update(entries) {
             opacity: 0.2,
             fillColor: colour,
             fillOpacity: 1
-        }).addTo(layerGroup).on('click', () => clickHandler(message, name, coords));
-    }
-
-    function clickHandler(message, name, coords) {
-        // TODO: centre on coordinates, make mascot appear
-        d3.select('#textBoxHeader').text(name);
-        d3.select('#textBoxContent').text(message);
+        }).addTo(layerGroup).on('click', () => selectEntry(entry));
     }
 
     layerGroup.clearLayers();
     entries.forEach(entry => updateEntry(entry));
 }
 
+function shuffle(entries) {
+    const randomIndex = Math.floor(Math.random() * entries.length);
+    const randomEntry = entries[randomIndex];
+    selectEntry(randomEntry);
+}
 
 fetch('data.json').then(res => res.json()).then(data => {
     const entries = data['features'];
-    map.on('zoom', () => update(entries));
     update(entries);
-
-        // const layerPoints = points.map(pt => map.latLngToLayerPoint(pt));
-        // svg.selectAll('g').remove();
-        // const svgPoints = svg.selectAll('g')
-        //     .data(layerPoints)
-        //     .enter()
-        //     .append('g')
-        //     .append('circle')
-        //     .attr('transform', (pt) => 'translate(' + pt.x + ',' + pt.y + ')')
-        //     .attr('fill', 'pink')
-        //     .attr('r', 2);
-
-    // function addPopupContent(feature, layer) {
-    //     layer.bindPopup("<h3>" + feature.properties.name + "</h3>" +
-    //                     "<p>" + feature.properties.message + "</p>");
-    // }
-
-    // function pointToLayer(feature, latlng) {
-    //     return L.marker([latlng['lat'], latlng['lng']]);
-    // }
+    map.on('zoom', () => update(entries));
+    document.getElementById('textBoxShuffle').addEventListener('click', () => shuffle(entries));
 });
