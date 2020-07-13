@@ -13,35 +13,57 @@ L.svg().addTo(map);
 // Select SVG layer and group from map
 const svg = d3.select('#map').select('svg');
 const g = svg.select('g');
-const layerGroup = L.layerGroup().addTo(map);
+const dotsLayerGroup = L.layerGroup().addTo(map);
+const iconLayerGroup = L.layerGroup().addTo(map);
 
 function selectEntry(entry) {
+    const coords = entry['geometry']['coordinates'];
+    const latlng = new L.LatLng(coords[1], coords[0]);
     const props = entry['properties'];
     const message = props['message'];
     const name = props['name'];
-    //  TODO: make mascot appear, centre if not in view
+
+    // Update textbox content
     d3.select('#textBoxHeader').text(name);
     d3.select('#textBoxContent').text(message);
+
+    // Redraw icon marker
+    iconLayerGroup.clearLayers();
+    const icon = L.icon({
+        iconUrl: 'static/pinkdoticon.png',
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+    })
+    const iconMarker = L.marker(latlng, {
+        icon: icon,
+        interactive: false
+    });
+    iconMarker.addTo(iconLayerGroup);
+
+    // Center on icon marker
+    map.panTo(latlng);
 }
 
-function update(entries) {
-    function updateEntry(entry) {
+function redrawMarkers(entries) {
+    function drawMarker(entry) {
         const coords = entry['geometry']['coordinates'];
         const latlng = new L.LatLng(coords[1], coords[0]);
         const colour = entry['properties']['colour'];
         const zoomLevel = map.getZoom();
-        L.circleMarker(latlng, {
+        const marker = L.circleMarker(latlng, {
             radius: 2 + (zoomLevel - 12),
             color: colour,
             weight: 7 + (zoomLevel - 12) * 2,
             opacity: 0.2,
             fillColor: colour,
             fillOpacity: 1
-        }).addTo(layerGroup).on('click', () => selectEntry(entry));
+        });
+        marker.addTo(dotsLayerGroup);
+        marker.on('click', () => selectEntry(entry));
     }
 
-    layerGroup.clearLayers();
-    entries.forEach(entry => updateEntry(entry));
+    dotsLayerGroup.clearLayers();
+    entries.forEach(entry => drawMarker(entry));
 }
 
 function shuffle(entries) {
@@ -52,7 +74,7 @@ function shuffle(entries) {
 
 fetch('data.json').then(res => res.json()).then(data => {
     const entries = data['features'];
-    update(entries);
-    map.on('zoom', () => update(entries));
+    redrawMarkers(entries);
+    map.on('zoom', () => redrawMarkers(entries));
     document.getElementById('textBoxShuffle').addEventListener('click', () => shuffle(entries));
 });
