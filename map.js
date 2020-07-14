@@ -1,18 +1,13 @@
 // Set up the map
-const map = L.map('map').setView([1.35, 103.82], 12);
+const map = L.map('map', {attributionControl: false});
+map.setView([1.35, 103.82], 12);
 
 L.tileLayer('http://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
-    attribution: '',
     minZoom: 11,
     maxZoom: 18
 }).addTo(map);
 
-// Initialize SVG layer and group
-L.svg().addTo(map);
-
-// Select SVG layer and group from map
-const svg = d3.select('#map').select('svg');
-const g = svg.select('g');
+// Create layer groups in map
 const dotsLayerGroup = L.layerGroup().addTo(map);
 const iconLayerGroup = L.layerGroup().addTo(map);
 
