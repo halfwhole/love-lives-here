@@ -9,6 +9,7 @@ verify_ssl = true
 regex = "*"
 pandas = "*"
 wordcloud = "*"
+names-dataset = "*"
 
 [requires]
 python_version = "3"
