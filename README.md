@@ -8,7 +8,7 @@ Generate data from `raw_data.txt` (not provided):
 - `data.json`: data in GeoJSON format
 
 ```sh
-pipenv run ipython script.py
+$ pipenv run ipython script.py
 ```
 
 ### Start server locally
@@ -16,5 +16,12 @@ pipenv run ipython script.py
 This will make it available at `localhost:8000`:
 
 ```sh
-python -m SimpleHTTPServer
+$ python -m SimpleHTTPServer
+```
+
+### Explore data
+
+```sh
+$ pipenv run ipython names.py
+$ pipenv run ipython messages.py
 ```
