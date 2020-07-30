@@ -10,6 +10,7 @@ regex = "*"
 pandas = "*"
 wordcloud = "*"
 names-dataset = "*"
+vadersentiment = "*"
 
 [requires]
 python_version = "3"
